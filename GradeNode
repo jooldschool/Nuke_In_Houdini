@@ -1,0 +1,33 @@
+#bind layer src? val=0
+#bind layer !&dst
+#bind layer gamma? float val=1
+
+#bind parm BlackPoint float val=0
+#bind parm WhitePoint float val=1
+#bind parm lift float val=0
+#bind parm gain float val=1
+#bind parm multiply float val=1
+#bind parm offset float val=0
+#bind parm gamma_parm float val=2.2
+
+
+@KERNEL
+{
+    //////// gamma math ////////
+    float4 src = @src;
+    float4 ori = src;
+    float gamma = @gamma * @gamma_parm;
+    gamma = 1.0 / gamma;
+
+    float4 gmmasrc = pow(src, gamma);
+    
+    //////// lift math ////////
+    float lift = @lift;
+    float4 lift_src = (lift*(1-ori));
+    
+    //////// Blackpoint math ////////
+        
+    float4 output = ((( ((src-@BlackPoint) / (@WhitePoint - @BlackPoint)) * ((@gain*@multiply)-lift_src) + lift_src )+@offset));
+
+    @dst.set(output);
+}
