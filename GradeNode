@@ -27,7 +27,7 @@
     
     //////// Blackpoint math ////////
         
-    float4 output = ((( ((src-@BlackPoint) / (@WhitePoint - @BlackPoint)) * ((@gain*@multiply)-lift_src) + lift_src )+@offset));
+    float4 output = pow(((( ((src-@BlackPoint) / (@WhitePoint - @BlackPoint)) * ((@gain*@multiply)-lift_src) + lift_src )+@offset)), gamma);
 
     @dst.set(output);
 }
